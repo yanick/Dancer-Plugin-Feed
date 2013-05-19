@@ -201,16 +201,6 @@ This method call B<create_feed> by setting the format to Atom.
 
 This method call B<create_feed> by setting the format to RSS.
 
-=head1 Exception
-
-=over
-
-=item FeedNoFormat
-
-=item FeedInvalidFormat
-
-=back
-
 =head1 CONTRIBUTING
 
 This module is developed on Github at:
@@ -238,3 +228,4 @@ You can find documentation for this module with the perldoc command.
 L<Dancer2>
 L<XML::Feed>
 L<XML::Feed::Entry>
+L<Dancer::Plugin::Feed>
