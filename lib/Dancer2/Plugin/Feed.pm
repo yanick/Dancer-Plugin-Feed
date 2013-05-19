@@ -28,7 +28,7 @@ register create_feed => sub {
     }elsif($format =~/^rss$/i) {
         _create_rss_feed(\%params);
     }else{
-        die "invalid format";
+        die "Unknown format $format, use rss or atom\n";
     }
 };
 
@@ -50,11 +50,12 @@ sub _validate_format {
 
     if (!$format) {
         my $settings = plugin_setting;
-        $format = $settings->{format} or die;
+        $format = $settings->{format} 
+            or die "Feed format is missing\n";
     }
 
     if ($format !~ /^(?:atom|rss)$/i) {
-        die;
+        die "Unknown format $format, use rss or atom\n";
     }
 
     return $format;
