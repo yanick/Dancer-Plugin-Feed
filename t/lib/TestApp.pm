@@ -1,7 +1,7 @@
-package t::lib::TestApp;
+package TestApp;
 
-use Dancer;
-use Dancer::Plugin::Feed;
+use Dancer2;
+use Dancer2::Plugin::Feed;
 
 get '/feed' => sub {
     create_feed(

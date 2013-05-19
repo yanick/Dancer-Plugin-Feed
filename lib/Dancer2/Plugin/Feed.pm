@@ -1,24 +1,16 @@
-package Dancer::Plugin::Feed;
+package Dancer2::Plugin::Feed;
 
-use Dancer ':syntax';
-use Dancer::Plugin;
-use Dancer::Exception qw(:all);
+use Dancer2 ':syntax';
+use Dancer2::Plugin;
 use XML::Feed;
 
-#ABSTRACT: Easy to generate feed rss or atom for Dancer applications.
+#ABSTRACT: Easy to generate feed rss or atom for Dancer2 applications.
 
 my $ct = {
     atom => 'application/atom+xml',
     rss  => 'application/rss+xml',
 };
 
-#Register exception
-register_exception('FeedInvalidFormat',
-    message_pattern => "Unknown format use rss or atom: %s"
-);
-register_exception('FeedNoFormat',
-    message_pattern => "Format is missing"
-);
 
 my @feed_properties =
   qw/format title base link tagline description author id language copyright self_link modified/;
@@ -27,7 +19,7 @@ my @entries_properties =
   qw/title base link content summary category tags author id issued modified enclosure/;
 
 register create_feed => sub {
-    my ($dsl, %params) = plugin_args(@_);
+    my ($dsl, %params) = @_;
 
     my $format = _validate_format(\%params);
 
@@ -36,7 +28,7 @@ register create_feed => sub {
     }elsif($format =~/^rss$/i) {
         _create_rss_feed(\%params);
     }else{
-        raise FeedInvalidFormat => $format;
+        die "invalid format";
     }
 };
 
@@ -53,16 +45,16 @@ register create_rss_feed => sub {
 };
 
 sub _validate_format {
-    my $params = shift;
+    my( $params, $dsl ) = @_;
     my $format = delete $params->{format};
 
     if (!$format) {
         my $settings = plugin_setting;
-        $format = $settings->{format} or raise 'FeedNoFormat';
+        $format = $settings->{format} or die;
     }
 
     if ($format !~ /^(?:atom|rss)$/i) {
-        raise FeedInvalidFormat => $format;
+        die;
     }
 
     return $format;
@@ -109,7 +101,7 @@ sub _create_rss_feed {
     _create_feed('RSS', $params);
 }
 
-register_plugin for_versions => [1, 2];
+register_plugin for_versions => [2];
 
 1;
 
@@ -117,8 +109,8 @@ register_plugin for_versions => [1, 2];
 
 =head1 SYNOPSIS
 
-    use Dancer;
-    use Dancer::Plugin::Feed;
+    use Dancer2;
+    use Dancer2::Plugin::Feed;
     use Try::Tiny;
 
     get '/feed/:format' => sub {
@@ -222,7 +214,7 @@ This method call B<create_feed> by setting the format to RSS.
 
 This module is developed on Github at:
 
-L<http://github.com/hobbestigrou/Dancer-Plugin-Feed>
+L<http://github.com/hobbestigrou/Dancer2-Plugin-Feed>
 
 Feel free to fork the repo and submit pull requests
 
@@ -238,10 +230,10 @@ Please report any bugs or feature requests in github.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Dancer::Plugin::Feed
+    perldoc Dancer2::Plugin::Feed
 
 =head1 SEE ALSO
 
-L<Dancer>
+L<Dancer2>
 L<XML::Feed>
 L<XML::Feed::Entry>
